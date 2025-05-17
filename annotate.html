@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>智能标注</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #inputText {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #3498db;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: vertical;
+            margin: 15px 0;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            border-bottom: 2px dotted #e74c3c;
+            position: relative;
+            cursor: help;
+        }
+
+        .highlight:hover::after {
+            content: attr(data-zhe);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        #result {
+            line-height: 2;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container function-page">
+        <a href="index.html" class="back-link">← 返回首页</a>
+        <h2>上口字智能标注系统</h2>
+        <div id="loadStatus">加载中...</div>
+        <textarea id="inputText" placeholder="请输入戏曲唱词..." disabled></textarea>
+        <button class="button" id="processBtn" disabled>开始标注</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let charMap = new Map();
+
+        window.onload = function() {
+            loadData();
+        };
+
+        function loadData() {
+            fetch('text.txt')
+                .then(response => response.text())
+                .then(data => {
+                    parseData(data);
+                    document.getElementById('loadStatus').innerHTML = '✅ 数据加载完成';
+                    document.getElementById('inputText').disabled = false;
+                    document.getElementById('processBtn').disabled = false;
+                })
+                .catch(error => {
+                    document.getElementById('loadStatus').innerHTML = '❌ 数据加载失败';
+                    console.error(error);
+                });
+        }
+
+        function parseData(rawData) {
+            rawData.split('\n').forEach(line => {
+                const match = line.match(/(.+辙)上口字：(.+)/);
+                if (match) {
+                    const zhe = match[1].trim();
+                    match[2].split('、').forEach(char => {
+                        charMap.set(char.trim(), zhe);
+                    });
+                }
+            });
+        }
+
+        function processText() {
+            const input = document.getElementById('inputText').value;
+            let output = '';
+            
+            for (const char of input) {
+                if (charMap.has(char)) {
+                    output += `<span class="highlight" data-zhe="${charMap.get(char)}">${char}</span>`;
+                } else {
+                    output += char;
+                }
+            }
+            
+            document.getElementById('result').innerHTML = output;
+        }
+
+        document.getElementById('processBtn').addEventListener('click', processText);
+    </script>
+</body>
+</html>

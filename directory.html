@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>字库总览</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .zhe-accordion {
+            margin: 20px 0;
+        }
+
+        .zhe-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .zhe-header:hover {
+            background: #2980b9;
+        }
+
+        .zhe-content {
+            display: none;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .char-list {
+            columns: 3;
+            column-gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container function-page">
+        <a href="index.html" class="back-link">← 返回首页</a>
+        <h2>上口字总目录</h2>
+        <div id="loadStatus">加载中...</div>
+        <div class="zhe-accordion" id="zheContainer"></div>
+    </div>
+
+    <script>
+        let charData = {};
+
+        window.onload = function() {
+            fetch('text.txt')
+                .then(response => response.text())
+                .then(data => {
+                    parseData(data);
+                    renderAccordion();
+                    document.getElementById('loadStatus').innerHTML = `✅ 已加载 ${Object.keys(charData).length} 个辙口`;
+                })
+                .catch(error => {
+                    document.getElementById('loadStatus').innerHTML = '❌ 数据加载失败';
+                    console.error(error);
+                });
+        };
+
+        function parseData(rawData) {
+            rawData.split('\n').forEach(line => {
+                const match = line.match(/(.+辙)上口字：(.+)/);
+                if (match) {
+                    const zhe = match[1].trim();
+                    charData[zhe] = match[2].split('、').map(c => c.trim());
+                }
+            });
+        }
+
+        function renderAccordion() {
+            const container = document.getElementById('zheContainer');
+            
+            Object.entries(charData).forEach(([zhe, chars]) => {
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <div class="zhe-header">${zhe}（${chars.length}字）</div>
+                    <div class="zhe-content">
+                        <div class="char-list">${chars.join(' ')}</div>
+                    </div>
+                `;
+                item.querySelector('.zhe-header').addEventListener('click', function() {
+                    this.nextElementSibling.style.display = 
+                        this.nextElementSibling.style.display === 'block' ? 'none' : 'block';
+                });
+                container.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>

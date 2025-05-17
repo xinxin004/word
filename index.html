@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>戏曲上口字系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .menu-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #2c3e50;
+            border: 2px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+            border-color: #3498db;
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        h1 {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>戏曲上口字智能系统</h1>
+        <div class="menu-grid">
+            <a href="annotate.html" class="menu-card">
+                <div class="card-icon">🎯</div>
+                <h3>智能标注</h3>
+                <p>自动识别并标注上口字</p>
+            </a>
+            <a href="introduction.html" class="menu-card">
+                <div class="card-icon">📚</div>
+                <h3>知识百科</h3>
+                <p>上口字介绍</p>
+            </a>
+            <a href="directory.html" class="menu-card">
+                <div class="card-icon">🗂️</div>
+                <h3>字库总览</h3>
+                <p>上口字分类检索</p>
+            </a>
+            <a href="examples.html" class="menu-card">
+                <div class="card-icon">🎭</div>
+                <h3>唱段示例</h3>
+                <p>经典唱段赏析</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
